@@ -4,3 +4,403 @@
 <!doctype html><meta charset="utf-8">
 <title>Weekly OK</title>
 <h1>Weekly 페이지 정상 작동</h1>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daily Market Brief (KST)</title>
+  <style>
+    :root { --bg:#0b0f17; --card:#121826; --text:#e8edf7; --muted:#9fb0c9; --accent:#5aa9ff; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", Arial, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif; }
+    header { padding:20px 16px; position:sticky; top:0; backdrop-filter: blur(6px); background: rgba(11,15,23,0.7); z-index: 10; border-bottom: 1px solid #1f2937; }
+    h1 { margin:0 0 6px 0; font-size:20px; }
+    .time { font-size:12px; color:var(--muted); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .grid { display:grid; grid-template-columns: 1fr; gap:16px; }
+    @media(min-width: 1024px){ .grid { grid-template-columns: 1fr 1fr; } }
+    .card { background:var(--card); border:1px solid #1f2937; border-radius:16px; padding:14px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .card h2 { font-size:16px; margin:0 0 10px 0; }
+    .muted { color:var(--muted); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid #233146; text-align: right; }
+    th:first-child, td:first-child { text-align: left; }
+    .up { color:#7dd97d; }
+    .down { color:#ff6b6b; }
+    .sources a { color: var(--accent); text-decoration: none; }
+    .chips { display:flex; gap:8px; flex-wrap: wrap; margin-top:4px; }
+    .chip { font-size:12px; padding:4px 8px; background:#0c1422; border:1px solid #1f2937; border-radius:999px; color:var(--muted); }
+    footer { color:var(--muted); font-size:12px; text-align:center; padding:20px 12px 40px; }
+    .section-title { margin: 0 0 8px 0; font-weight:600; }
+    .note { font-size:12px; color:var(--muted); margin-top:6px; }
+    .flex2 { display:grid; grid-template-columns: 1fr; gap:16px; }
+    @media(min-width: 1024px){ .flex2 { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Daily Market Brief</h1>
+    <div class="time">KST <span id="now"></span></div>
+    <div class="chips">
+      <span class="chip">미국</span><span class="chip">한국</span><span class="chip">유로존</span><span class="chip">중국</span>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Live Ticker -->
+    <div class="card">
+      <h2 class="section-title">Live Ticker</h2>
+      <div class="note">실시간 지표: TradingView 위젯</div>
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+        {
+          "symbols": [
+            {"proName": "FOREXCOM:SPXUSD", "title": "S&P 500"},
+            {"proName": "FOREXCOM:NSXUSD", "title": "Nasdaq 100"},
+            {"proName": "INDEX:DJI", "title": "Dow"},
+            {"proName": "KRX:K2I1!", "title": "KOSPI200 Futures"},
+            {"proName": "KRX:KOSPI", "title": "KOSPI"},
+            {"proName": "FX_IDC:USDKRW", "title": "USD/KRW"},
+            {"proName": "TVC:DXY", "title": "DXY"},
+            {"proName": "TVC:VIX", "title": "VIX"},
+            {"proName": "TVC:GOLD", "title": "Gold"},
+            {"proName": "TVC:UKOIL", "title": "Brent"},
+            {"proName": "TVC:WTI", "title": "WTI"},
+            {"proName": "TVC:US10Y", "title": "U.S. 10Y"}
+          ],
+          "showSymbolLogo": true,
+          "colorTheme": "dark",
+          "isTransparent": true,
+          "displayMode": "adaptive",
+          "locale": "en"
+        }
+        </script>
+      </div>
+    </div>
+
+    <!-- Key Levels Table -->
+    <div class="card">
+      <h2 class="section-title">Key Levels (요약 표)</h2>
+      <table id="levels">
+        <thead>
+          <tr>
+            <th>자산</th><th>현재</th><th>전일대비</th><th>%</th><th>일중범위</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>DXY(달러인덱스)</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>VIX</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>S&P 500</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Nasdaq 100</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Dow Jones</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>KOSPI200 선물</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>KOSPI</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>KOSDAQ</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>USD/KRW</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>EUR/KRW</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>JPY/KRW</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Gold(Spot)</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>WTI</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Brent</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>U.S. 2Y</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>U.S. 10Y</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Korea 3Y</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Korea 10Y</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <div class="note">수치는 매일 요약에서 복사해 붙여넣어 사용하세요.</div>
+    </div>
+
+    <!-- Charts -->
+    <div class="card">
+      <h2 class="section-title">Charts</h2>
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+        {
+          "colorTheme": "dark",
+          "dateRange": "1D",
+          "showChart": true,
+          "locale": "en",
+          "isTransparent": true,
+          "showSymbolLogo": true,
+          "width": "100%",
+          "height": "560",
+          "tabs": [
+            {
+              "title": "미국",
+              "symbols": [
+                {"s": "FOREXCOM:SPXUSD", "d": "S&P 500"},
+                {"s": "FOREXCOM:NSXUSD", "d": "Nasdaq 100"},
+                {"s": "INDEX:DJI", "d": "Dow"},
+                {"s": "TVC:VIX", "d": "VIX"},
+                {"s": "TVC:US10Y", "d": "U.S. 10Y"}
+              ]
+            },
+            {
+              "title": "한국",
+              "symbols": [
+                {"s": "KRX:K2I1!", "d": "KOSPI200 선물"},
+                {"s": "KRX:KOSPI", "d": "KOSPI"},
+                {"s": "KRX:KOSDAQ", "d": "KOSDAQ"}
+              ]
+            },
+            {
+              "title": "FX&원자재",
+              "symbols": [
+                {"s": "FX_IDC:USDKRW", "d": "USD/KRW"},
+                {"s": "TVC:DXY", "d": "DXY"},
+                {"s": "FX_IDC:EURKRW", "d": "EUR/KRW"},
+                {"s": "FX_IDC:JPYKRW", "d": "JPY/KRW"},
+                {"s": "TVC:GOLD", "d": "Gold"},
+                {"s": "TVC:UKOIL", "d": "Brent"},
+                {"s": "TVC:WTI", "d": "WTI"}
+              ]
+            }
+          ]
+        }
+        </script>
+      </div>
+    </div>
+
+    <!-- 시황 코멘트 -->
+    <div class="card">
+      <h2 class="section-title">시황 코멘트</h2>
+      <p id="commentary">[예시] 미 증시는 ○○지표 호조로 기술주 중심 상승. 달러인덱스 강보합, 원/달러 박스권. 유가 반등에 에너지 강세, KOSPI200 선물 약보합 출발 예상.</p>
+    </div>
+
+    <!-- Economics: KR/US/EU/CN -->
+    <div class="card">
+      <h2 class="section-title">오늘의 경제지표 (KST) — KR / US / EU / CN</h2>
+      <table>
+        <thead>
+          <tr><th>시간</th><th>지역</th><th>지표</th><th>예상</th><th>이전</th><th>중요도</th></tr>
+        </thead>
+        <tbody id="eco">
+          <tr><td>—</td><td>KR</td><td>—</td><td>—</td><td>—</td><td>★</td></tr>
+          <tr><td>—</td><td>US</td><td>—</td><td>—</td><td>—</td><td>★★</td></tr>
+          <tr><td>—</td><td>EU</td><td>—</td><td>—</td><td>—</td><td>★★★</td></tr>
+          <tr><td>—</td><td>CN</td><td>—</td><td>—</td><td>—</td><td>★</td></tr>
+        </tbody>
+      </table>
+      <div class="note">한국/미국/유로존/중국만 표기합니다.</div>
+    </div>
+
+    <!-- Sector tables -->
+    <div class="flex2">
+      <div class="card">
+        <h2 class="section-title">국내 섹터별 대표주</h2>
+        <table>
+          <thead><tr><th>섹터</th><th>대표주(예시)</th><th>등락%</th></tr></thead>
+          <tbody>
+            <tr><td>은행</td><td>신한지주, KB금융</td><td>—</td></tr>
+            <tr><td>반도체</td><td>삼성전자, SK하이닉스</td><td>—</td></tr>
+            <tr><td>인터넷/플랫폼</td><td>네이버, 카카오</td><td>—</td></tr>
+            <tr><td>자동차</td><td>현대차, 기아</td><td>—</td></tr>
+            <tr><td>2차전지</td><td>LG에너지솔루션, 삼성SDI</td><td>—</td></tr>
+            <tr><td>바이오/제약</td><td>삼성바이오, 셀트리온</td><td>—</td></tr>
+            <tr><td>철강</td><td>POSCO홀딩스</td><td>—</td></tr>
+            <tr><td>조선</td><td>HD한국조선해양</td><td>—</td></tr>
+            <tr><td>유틸리티</td><td>한국전력</td><td>—</td></tr>
+            <tr><td>유통</td><td>이마트, 롯데쇼핑</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">미국 섹터별 대표주</h2>
+        <table>
+          <thead><tr><th>섹터</th><th>대표주(예시)</th><th>등락%</th></tr></thead>
+          <tbody>
+            <tr><td>정보기술</td><td>애플, 마이크로소프트, 엔비디아</td><td>—</td></tr>
+            <tr><td>커뮤니케이션</td><td>알파벳, 메타</td><td>—</td></tr>
+            <tr><td>임의소비</td><td>아마존, 테슬라</td><td>—</td></tr>
+            <tr><td>필수소비</td><td>프록터앤갬블, 코카콜라</td><td>—</td></tr>
+            <tr><td>금융</td><td>JP모건, 버크셔해서웨이</td><td>—</td></tr>
+            <tr><td>헬스케어</td><td>일라이릴리, 유나이티드헬스</td><td>—</td></tr>
+            <tr><td>산업재</td><td>GE Aerospace, 캐터필러</td><td>—</td></tr>
+            <tr><td>에너지</td><td>엑슨모빌, 셰브런</td><td>—</td></tr>
+            <tr><td>소재</td><td>린데</td><td>—</td></tr>
+            <tr><td>유틸리티</td><td>넥스트에라에너지</td><td>—</td></tr>
+            <tr><td>부동산</td><td>프로로지스</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sources & URL placeholder -->
+    <div class="card">
+      <h2 class="section-title">대시보드 URL</h2>
+      <div class="note">공개용으로 호스팅한 링크를 여기에 기입하세요.</div>
+      <div style="word-break: break-all; padding-top:6px;">https://inseongha838-ui.github.io/market-brief/daily/</div>
+    </div>
+
+    <div class="card sources">
+      <h2 class="section-title">Sources</h2>
+      <ul id="sources">
+        <li><a href="#" target="_blank" rel="noopener">링크 1</a></li>
+        <li><a href="#" target="_blank" rel="noopener">링크 2</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    © <span id="yr"></span> Daily Market Brief · All times KST
+  </footer>
+
+  <script>
+    function pad(n){ return n<10 ? '0'+n : n; }
+    function updateNow(){
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = pad(now.getMonth()+1);
+      const d = pad(now.getDate());
+      const hh = pad(now.getHours());
+      const mm = pad(now.getMinutes());
+      document.getElementById('now').textContent = `${y}-${m}-${d} ${hh}:${mm}`;
+      document.getElementById('yr').textContent = y;
+    }
+    updateNow();
+    setInterval(updateNow, 60000);
+  </script>
+</body>
+</html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weekly Market Wrap (KST)</title>
+  <style>
+    :root { --bg:#0b0f17; --card:#121826; --text:#e8edf7; --muted:#9fb0c9; --accent:#5aa9ff; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", Arial, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif; }
+    header { padding:20px 16px; position:sticky; top:0; backdrop-filter: blur(6px); background: rgba(11,15,23,0.7); z-index: 10; border-bottom: 1px solid #1f2937; }
+    h1 { margin:0 0 6px 0; font-size:20px; }
+    .time { font-size:12px; color:var(--muted); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .card { background:var(--card); border:1px solid #1f2937; border-radius:16px; padding:14px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .card h2 { font-size:16px; margin:0 0 10px 0; }
+    .note { font-size:12px; color:var(--muted); margin-top:6px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid #233146; text-align: right; }
+    th:first-child, td:first-child { text-align: left; }
+    .flex2 { display:grid; grid-template-columns: 1fr; gap:16px; }
+    @media(min-width: 1024px){ .flex2 { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Weekly Market Wrap</h1>
+    <div class="time">KST <span id="now"></span></div>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h2>TL;DR</h2>
+      <div>이번 주 시장 한줄 요약을 여기에.</div>
+    </div>
+
+    <div class="card">
+      <h2>이번 주 수익률 (WoW)</h2>
+      <table>
+        <thead>
+          <tr><th>자산</th><th>주간수익률%</th><th>주간고저범위</th><th>코멘트</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>DXY(달러인덱스)</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>VIX</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>S&P 500</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Nasdaq 100</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Dow</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>KOSPI200 선물</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>KOSPI</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>KOSDAQ</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>USD/KRW</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>EUR/KRW</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>JPY/KRW</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Gold</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>WTI</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Brent</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>U.S. 2Y</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>U.S. 10Y</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Korea 3Y</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Korea 10Y</td><td>—</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>이번 주 하이라이트 · 다음 주 일정 (KR/US/EU/CN)</h2>
+      <ul>
+        <li>하이라이트/리스크 요인 요약</li>
+      </ul>
+      <div class="note">다음 주 핵심 이벤트(예: CPI, FOMC, 한국 수출입, 유로존 PMI, 중국 지표 등)</div>
+    </div>
+
+    <div class="flex2">
+      <div class="card">
+        <h2>국내 섹터별 대표주 (주간)</h2>
+        <table>
+          <thead><tr><th>섹터</th><th>대표주(예시)</th><th>주간%</th><th>코멘트</th></tr></thead>
+          <tbody>
+            <tr><td>은행</td><td>신한지주, KB금융</td><td>—</td><td>—</td></tr>
+            <tr><td>반도체</td><td>삼성전자, SK하이닉스</td><td>—</td><td>—</td></tr>
+            <tr><td>인터넷/플랫폼</td><td>네이버, 카카오</td><td>—</td><td>—</td></tr>
+            <tr><td>자동차</td><td>현대차, 기아</td><td>—</td><td>—</td></tr>
+            <tr><td>2차전지</td><td>LG에너지솔루션, 삼성SDI</td><td>—</td><td>—</td></tr>
+            <tr><td>바이오/제약</td><td>삼성바이오, 셀트리온</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h2>미국 섹터별 대표주 (주간)</h2>
+        <table>
+          <thead><tr><th>섹터</th><th>대표주(예시)</th><th>주간%</th><th>코멘트</th></tr></thead>
+          <tbody>
+            <tr><td>정보기술</td><td>애플, 마이크로소프트, 엔비디아</td><td>—</td><td>—</td></tr>
+            <tr><td>커뮤니케이션</td><td>알파벳, 메타</td><td>—</td><td>—</td></tr>
+            <tr><td>임의소비</td><td>아마존, 테슬라</td><td>—</td><td>—</td></tr>
+            <tr><td>금융</td><td>JP모건, 버크셔해서웨이</td><td>—</td><td>—</td></tr>
+            <tr><td>헬스케어</td><td>일라이릴리, 유나이티드헬스</td><td>—</td><td>—</td></tr>
+            <tr><td>에너지</td><td>엑슨모빌, 셰브런</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>시황 코멘트</h2>
+      <p>[예시] 주간 기준 기술주 강세 지속. 달러인덱스 강세로 원화·유로 약세, 원자재는 유가 반등·금 보합. 다음 주 핵심은 미국 CPI와 중국 지표.</p>
+    </div>
+
+    <div class="card">
+      <h2>대시보드 URL</h2>
+      <div class="note">공개용으로 호스팅한 링크를 여기에 기입하세요.</div>
+      <div style="word-break: break-all; padding-top:6px;">https://inseongha838-ui.github.io/market-brief/weekly/</div>
+    </div>
+  </div>
+
+  <footer>
+    © <span id="yr"></span> Weekly Market Wrap · All times KST
+  </footer>
+
+  <script>
+    function pad(n){ return n<10 ? '0'+n : n; }
+    function updateNow(){
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = pad(now.getMonth()+1);
+      const d = pad(now.getDate());
+      const hh = pad(now.getHours());
+      const mm = pad(now.getMinutes());
+      document.getElementById('now').textContent = `${y}-${m}-${d} ${hh}:${mm}`;
+      document.getElementById('yr').textContent = y;
+    }
+    updateNow();
+    setInterval(updateNow, 60000);
+  </script>
+</body>
+</html>
